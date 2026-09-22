@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es2023",
+    "module": "esnext",
+    "lib": ["ES2023", "DOM"],
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "baseUrl": ".",
+    "paths": {
+      "@dynamic-form/core": [
+        "../../packages/core/dist/src/index.d.ts"
+      ]
+    }
+  },
+  "include": ["src", "tests", "vite.config.ts"]
+}

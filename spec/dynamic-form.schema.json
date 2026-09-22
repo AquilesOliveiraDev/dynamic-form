@@ -1,0 +1,345 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://createpixels.com/schemas/dynamic-form.schema.json",
+  "title": "DynamicFormSchema",
+  "description": "Especificação universal do esquema de formulário dinâmico declarativo e reativo",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Título principal do formulário"
+    },
+    "subtitle": {
+      "type": "string",
+      "description": "Subtítulo explicativo"
+    },
+    "structure": {
+      "$ref": "#/definitions/FieldMatrix",
+      "description": "Matriz bidimensional (Linhas x Colunas) de campos"
+    },
+    "fields": {
+      "$ref": "#/definitions/FieldMatrix",
+      "description": "Alias para structure"
+    },
+    "default": {
+      "type": "object",
+      "description": "Valores padrão iniciais para os campos",
+      "additionalProperties": true
+    },
+    "actions": {
+      "$ref": "#/definitions/FormActions"
+    }
+  },
+  "required": [],
+  "anyOf": [
+    { "required": ["structure"] },
+    { "required": ["fields"] }
+  ],
+  "definitions": {
+    "FieldMatrix": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/DynamicField"
+        }
+      }
+    },
+    "DynamicField": {
+      "type": "object",
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": [
+            "input",
+            "number",
+            "password",
+            "switch",
+            "select",
+            "autocomplete",
+            "datepicker",
+            "rangepicker",
+            "textarea",
+            "richtext",
+            "editorHtml",
+            "html",
+            "checkbox",
+            "colorpicker",
+            "radio",
+            "iconpicker",
+            "slider",
+            "photo",
+            "upload",
+            "file",
+            "currency",
+            "percent",
+            "tree",
+            "customComponent"
+          ],
+          "description": "Tipo de componente a ser renderizado"
+        },
+        "title": {
+          "type": "string",
+          "description": "Título acima do campo"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SelectOption"
+          }
+        },
+        "attr": {
+          "$ref": "#/definitions/FieldAttributes"
+        },
+        "dependentFields": {
+          "$ref": "#/definitions/DynamicFieldRule",
+          "description": "Condição para o campo ser visível"
+        },
+        "dependentFieldsCondition": {
+          "type": "string",
+          "enum": ["and", "or"],
+          "default": "or"
+        },
+        "disabledFields": {
+          "$ref": "#/definitions/DynamicFieldRule",
+          "description": "Condição para o campo ser desabilitado"
+        },
+        "disabledFieldsCondition": {
+          "type": "string",
+          "enum": ["and", "or"],
+          "default": "or"
+        },
+        "reloadFields": {
+          "$ref": "#/definitions/DynamicFieldRule",
+          "description": "Campos que ao mudarem forçam o reset deste campo"
+        },
+        "autoSetFields": {
+          "type": "object",
+          "description": "Mapeamento campoOrigem -> caminhoNoRegistro/literal/#{campo}#",
+          "additionalProperties": {
+            "type": ["string", "null"]
+          }
+        },
+        "clearedFields": {
+          "$ref": "#/definitions/ClearedFieldsRule",
+          "description": "Campos de origem que, ao mudarem, limpam este campo"
+        },
+        "clearedFieldsChanged": {
+          "type": "boolean",
+          "description": "Compatibilidade retroativa: se true, declaredFields lista os filhos a limpar"
+        },
+        "requiredFields": {
+          "$ref": "#/definitions/DynamicFieldRule",
+          "description": "Condição para que o campo se torne obrigatório"
+        },
+        "requiredRule": {
+          "type": "string",
+          "enum": ["and", "or"],
+          "default": "or"
+        },
+        "calcFields": {
+          "type": "string",
+          "description": "Expressão aritmética (ex.: #{qtd}# * #{preco}#)"
+        }
+      },
+      "required": ["component", "attr"]
+    },
+    "FieldAttributes": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Identificador único da chave no formulário"
+        },
+        "label": {
+          "type": "string"
+        },
+        "placeholder": {
+          "type": "string"
+        },
+        "hidden": {
+          "type": "boolean",
+          "description": "Se estaticamente oculto (mantém valor no form)"
+        },
+        "disabled": {
+          "type": "boolean"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SelectOption"
+          }
+        },
+        "mask": {
+          "type": "string"
+        },
+        "maskType": {
+          "type": "string"
+        },
+        "route": {
+          "type": "string"
+        },
+        "searchRoute": {
+          "type": "string"
+        },
+        "subPath": {
+          "type": "string"
+        },
+        "dataKey": {
+          "type": "string"
+        },
+        "totalKey": {
+          "type": "string"
+        },
+        "pageSizeKey": {
+          "type": "string"
+        },
+        "optionLabel": {
+          "type": ["string", "array"],
+          "items": { "type": "string" }
+        },
+        "optionValue": {
+          "type": ["string", "array"],
+          "items": { "type": "string" }
+        },
+        "searchColumns": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "extraParams": {
+          "type": "string"
+        },
+        "extraOptions": {
+          "type": "object"
+        },
+        "step": {
+          "type": ["number", "string"],
+          "description": "Passo para inputs numéricos e precisão de arredondamento no calcFields"
+        },
+        "calcField": {
+          "type": ["object", "string"],
+          "properties": {
+            "expression": { "type": "string" }
+          }
+        },
+        "rule": {
+          "$ref": "#/definitions/FieldRuleCondition"
+        },
+        "keyRules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/KeyRule"
+          }
+        },
+        "prefix": {
+          "type": ["string", "array"],
+          "items": { "type": "string" }
+        },
+        "suffix": {
+          "type": ["string", "array"],
+          "items": { "type": "string" }
+        },
+        "groupTitle": {
+          "type": "string",
+          "description": "Título do cabeçalho da linha no modo colapsável"
+        }
+      },
+      "required": ["name"],
+      "additionalProperties": true
+    },
+    "SelectOption": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "value": {},
+        "id": {},
+        "disabled": {
+          "type": "boolean"
+        },
+        "record": {
+          "type": "object",
+          "description": "Dados crus retornados pela API"
+        }
+      },
+      "required": ["label", "value"],
+      "additionalProperties": true
+    },
+    "DynamicFieldRule": {
+      "type": ["array", "object"],
+      "items": {
+        "type": "string"
+      },
+      "additionalProperties": true
+    },
+    "ClearedFieldsRule": {
+      "type": ["array", "object"],
+      "items": {
+        "type": "string"
+      },
+      "properties": {
+        "fields": {
+          "$ref": "#/definitions/DynamicFieldRule"
+        }
+      },
+      "additionalProperties": true
+    },
+    "FieldRuleCondition": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "value": {},
+        "operator": {
+          "type": "string",
+          "enum": ["===", "!==", "==", "!=", ">", ">=", "<", "<=", "includes", "in", "isFilled", "isEmpty"],
+          "default": "==="
+        },
+        "action": {
+          "type": "string",
+          "enum": ["show", "hide", "enable", "disable", "require", "clear"],
+          "default": "show"
+        }
+      },
+      "required": ["field"]
+    },
+    "KeyRule": {
+      "type": "object",
+      "properties": {
+        "rule": {
+          "type": "string",
+          "enum": ["show", "hide", "disable", "enable", "required", "notRequired"]
+        },
+        "key": {
+          "type": "string"
+        },
+        "variable": {
+          "type": "string"
+        },
+        "requiredValue": {},
+        "areaId": {}
+      }
+    },
+    "FormActions": {
+      "type": "object",
+      "properties": {
+        "submit": {
+          "type": "boolean",
+          "default": true
+        },
+        "reset": {
+          "type": "boolean",
+          "default": true
+        },
+        "submitText": {
+          "type": "string"
+        },
+        "resetText": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,363 @@
+{
+  "$schema": "https://createpixels.com/schemas/dynamic-form.schema.json",
+  "title": "Catálogo & Pedido Dinâmico: 10 Regras do DynamicField",
+  "subtitle": "Validação Universal Fim-a-Fim com @dynamic-form/core",
+  "catalogs": {
+    "products": [
+      {
+        "label": "Notebook Dell XPS 15 (R$ 8.500)",
+        "value": "prod_dell",
+        "record": {
+          "sku": "DELL-XPS-15",
+          "price": 8500
+        }
+      },
+      {
+        "label": "Monitor LG UltraWide 34\" (R$ 2.400)",
+        "value": "prod_lg",
+        "record": {
+          "sku": "LG-34-UW",
+          "price": 2400
+        }
+      },
+      {
+        "label": "Teclado Mecânico Keychron (R$ 650)",
+        "value": "prod_key",
+        "record": {
+          "sku": "KEY-K2-RGB",
+          "price": 650
+        }
+      }
+    ],
+    "cities_by_state": {
+      "SP": [
+        {
+          "label": "São Paulo",
+          "value": "sp_capital"
+        },
+        {
+          "label": "Campinas",
+          "value": "sp_campinas"
+        },
+        {
+          "label": "São José dos Campos",
+          "value": "sp_sjc"
+        }
+      ],
+      "RJ": [
+        {
+          "label": "Rio de Janeiro",
+          "value": "rj_capital"
+        },
+        {
+          "label": "Niterói",
+          "value": "rj_niteroi"
+        },
+        {
+          "label": "Petrópolis",
+          "value": "rj_petropolis"
+        }
+      ],
+      "MG": [
+        {
+          "label": "Belo Horizonte",
+          "value": "mg_capital"
+        },
+        {
+          "label": "Uberlândia",
+          "value": "mg_uberlandia"
+        },
+        {
+          "label": "Ouro Preto",
+          "value": "mg_ouropreto"
+        }
+      ]
+    }
+  },
+  "structure": [
+    [
+      {
+        "component": "select",
+        "attr": {
+          "name": "person_type",
+          "label": "Tipo de Pessoa",
+          "options": [
+            {
+              "label": "Pessoa Física (PF)",
+              "value": "PF"
+            },
+            {
+              "label": "Pessoa Jurídica (PJ)",
+              "value": "PJ"
+            }
+          ]
+        },
+        "clearedFieldsChanged": true,
+        "clearedFields": [
+          "cpf",
+          "cnpj",
+          "corporate_name"
+        ]
+      },
+      {
+        "component": "input",
+        "attr": {
+          "name": "name",
+          "label": "Nome de Contato",
+          "required": true,
+          "placeholder": "Ex: João Silva"
+        }
+      }
+    ],
+    [
+      {
+        "component": "input",
+        "attr": {
+          "name": "cpf",
+          "label": "CPF",
+          "placeholder": "000.000.000-00"
+        },
+        "dependentFields": {
+          "person_type": "PF"
+        },
+        "requiredFields": {
+          "person_type": "PF"
+        },
+        "requiredRule": "or"
+      },
+      {
+        "component": "input",
+        "attr": {
+          "name": "cnpj",
+          "label": "CNPJ",
+          "placeholder": "00.000.000/0001-00"
+        },
+        "dependentFields": {
+          "person_type": "PJ"
+        },
+        "requiredFields": {
+          "person_type": "PJ"
+        },
+        "requiredRule": "or"
+      },
+      {
+        "component": "input",
+        "attr": {
+          "name": "corporate_name",
+          "label": "Razão Social",
+          "placeholder": "Ex: Create Pixels LTDA"
+        },
+        "dependentFields": {
+          "person_type": "PJ"
+        },
+        "clearedFields": [
+          "person_type"
+        ]
+      }
+    ],
+    [
+      {
+        "component": "select",
+        "attr": {
+          "name": "state_id",
+          "label": "Estado (UF)",
+          "options": [
+            {
+              "label": "São Paulo (SP)",
+              "value": "SP"
+            },
+            {
+              "label": "Rio de Janeiro (RJ)",
+              "value": "RJ"
+            },
+            {
+              "label": "Minas Gerais (MG)",
+              "value": "MG"
+            }
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "attr": {
+          "name": "city_id",
+          "label": "Cidade"
+        },
+        "clearedFields": [
+          "state_id"
+        ],
+        "reloadFields": [
+          "state_id"
+        ]
+      }
+    ],
+    [
+      {
+        "component": "select",
+        "attr": {
+          "name": "supplier_category",
+          "label": "Categoria do Fornecedor",
+          "options": [
+            {
+              "label": "Padrão (Standard)",
+              "value": "standard"
+            },
+            {
+              "label": "VIP (Grandes Contas)",
+              "value": "vip"
+            },
+            {
+              "label": "Restrito (Bloqueado)",
+              "value": "restricted"
+            }
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "attr": {
+          "name": "payment_terms",
+          "label": "Prazo de Pagamento",
+          "options": [
+            {
+              "label": "À Vista",
+              "value": "cash"
+            },
+            {
+              "label": "Boleto 30 Dias",
+              "value": "30_days"
+            },
+            {
+              "label": "Boleto 60 Dias",
+              "value": "60_days"
+            }
+          ]
+        },
+        "disabledFields": {
+          "supplier_category": "restricted",
+          "person_type": "PF"
+        },
+        "disabledFieldsCondition": "and"
+      },
+      {
+        "component": "number",
+        "attr": {
+          "name": "discount_percent",
+          "label": "Desconto (%)",
+          "min": 0,
+          "max": 100
+        },
+        "disabledFields": {
+          "supplier_category": "restricted"
+        },
+        "disabledFieldsCondition": "or"
+      }
+    ],
+    [
+      {
+        "component": "select",
+        "attr": {
+          "name": "product_id",
+          "label": "Produto / Item",
+          "options": [
+            {
+              "label": "Notebook Dell XPS 15 (R$ 8.500)",
+              "value": "prod_dell",
+              "record": {
+                "sku": "DELL-XPS-15",
+                "price": 8500
+              }
+            },
+            {
+              "label": "Monitor LG UltraWide 34\" (R$ 2.400)",
+              "value": "prod_lg",
+              "record": {
+                "sku": "LG-34-UW",
+                "price": 2400
+              }
+            },
+            {
+              "label": "Teclado Mecânico Keychron (R$ 650)",
+              "value": "prod_key",
+              "record": {
+                "sku": "KEY-K2-RGB",
+                "price": 650
+              }
+            }
+          ]
+        }
+      },
+      {
+        "component": "input",
+        "attr": {
+          "name": "product_sku",
+          "label": "SKU do Item",
+          "disabled": true
+        },
+        "autoSetFields": {
+          "product_id": "record.sku"
+        }
+      },
+      {
+        "component": "number",
+        "attr": {
+          "name": "unit_price",
+          "label": "Preço Unitário (R$)",
+          "disabled": true
+        },
+        "autoSetFields": {
+          "product_id": "record.price"
+        }
+      }
+    ],
+    [
+      {
+        "component": "number",
+        "attr": {
+          "name": "quantity",
+          "label": "Quantidade",
+          "min": 1
+        }
+      },
+      {
+        "component": "number",
+        "attr": {
+          "name": "total_price",
+          "label": "Total Calculado (R$)",
+          "disabled": true,
+          "step": 0.01
+        },
+        "calcFields": "#{quantity}# * #{unit_price}# * (1 - #{discount_percent}# / 100)"
+      },
+      {
+        "component": "number",
+        "attr": {
+          "name": "warranty_months",
+          "label": "Garantia Adicional (Meses)",
+          "placeholder": "Obrigatório se VIP e Quantidade = 5"
+        },
+        "requiredFields": {
+          "supplier_category": "vip",
+          "quantity": 5
+        },
+        "requiredRule": "and"
+      }
+    ]
+  ],
+  "default": {
+    "person_type": "PF",
+    "supplier_category": "standard",
+    "payment_terms": "cash",
+    "discount_percent": 10,
+    "state_id": "SP",
+    "city_id": "sp_capital",
+    "product_id": "prod_dell",
+    "quantity": 2
+  },
+  "actions": {
+    "submit": true,
+    "reset": true,
+    "submitText": "Submeter Formulário",
+    "resetText": "Restaurar"
+  }
+}

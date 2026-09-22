@@ -1,0 +1,26 @@
+{
+  "name": "@dynamic-form/core",
+  "version": "1.0.0",
+  "description": "Universal, UI-agnostic, DAG-based reactive engine for complex dynamic forms",
+  "type": "module",
+  "main": "./dist/src/index.js",
+  "module": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js",
+      "require": "./dist/src/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test dist/tests/*.js"
+  },
+  "keywords": ["form", "dynamic-form", "dag", "reactive", "universal", "json-schema", "headless", "state-machine"],
+  "author": "Create Pixels",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

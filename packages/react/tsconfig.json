@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "jsx": "react-jsx",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "react": ["../../../Web/node_modules/@types/react"],
+      "react/jsx-runtime": ["../../../Web/node_modules/@types/react/jsx-runtime"],
+      "@dynamic-form/core": ["../core/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*"]
+}

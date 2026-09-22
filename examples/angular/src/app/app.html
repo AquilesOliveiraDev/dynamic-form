@@ -1,0 +1,403 @@
+<div class="app-layout" *ngIf="formService.state() as s">
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-row">
+        <span class="tech-badge">Angular 22 + Signals</span>
+        <span class="engine-badge">&#64;dynamic-form/core</span>
+        <span class="status-badge" [class.dirty]="s.isDirty">
+          {{ s.isDirty ? '● Não Salvo (Dirty)' : '✓ Sincronizado' }}
+        </span>
+      </div>
+      <h1 class="app-title">{{ schema.title }}</h1>
+      <p class="app-subtitle">{{ schema.subtitle }}</p>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- Feedback de Sucesso no Envio -->
+    <div class="alert-success" *ngIf="submitSuccess">
+      <div class="alert-icon">✓</div>
+      <div>
+        <strong>Formulário Validado e Submetido com Sucesso!</strong>
+        <p>Todos os campos obrigatórios e regras ativas foram respeitados pelo &#64;dynamic-form/core.</p>
+      </div>
+    </div>
+
+    <form (submit)="$event.preventDefault(); onSubmit()" class="form-grid">
+      <!-- Seção 1: Identificação -->
+      <section class="card section-card">
+        <div class="card-header">
+          <div class="section-title-wrap">
+            <span class="section-num">1</span>
+            <div>
+              <h2 class="section-title">Identificação do Contato</h2>
+              <p class="section-desc">Validação condicional de documentos e limpeza reativa</p>
+            </div>
+          </div>
+          <div class="chip-group">
+            <span class="chip">dependentFields</span>
+            <span class="chip">requiredFields</span>
+            <span class="chip">clearedFieldsChanged</span>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="form-row">
+            <!-- Tipo de Pessoa -->
+            <div class="form-group flex-1">
+              <label class="field-label">Tipo de Pessoa</label>
+              <div class="segmented-control">
+                <button
+                  type="button"
+                  class="segment-btn"
+                  [class.active]="s.values['person_type'] === 'PF'"
+                  (click)="setPersonType('PF')"
+                >
+                  Pessoa Física (PF)
+                </button>
+                <button
+                  type="button"
+                  class="segment-btn"
+                  [class.active]="s.values['person_type'] === 'PJ'"
+                  (click)="setPersonType('PJ')"
+                >
+                  Pessoa Jurídica (PJ)
+                </button>
+              </div>
+              <small class="field-hint">💡 clearedFieldsChanged limpa CPF/CNPJ na troca de tipo</small>
+            </div>
+
+            <!-- Nome de Contato -->
+            <div class="form-group flex-1">
+              <label class="field-label" [class.required]="isFieldRequired('name')">
+                Nome de Contato <span class="req-star" *ngIf="isFieldRequired('name')">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                [class.has-error]="s.errors['name']"
+                [value]="s.values['name'] || ''"
+                (input)="onInputChange('name', $event)"
+                placeholder="Ex: João Silva"
+              />
+              <span class="error-msg" *ngIf="s.errors['name']">{{ s.errors['name'] }}</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <!-- CPF (Visível se PF) -->
+            <div class="form-group flex-1" *ngIf="s.visibility['cpf'] !== false">
+              <label class="field-label" [class.required]="isFieldRequired('cpf')">
+                CPF (Pessoa Física) <span class="req-star" *ngIf="isFieldRequired('cpf')">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                [class.has-error]="s.errors['cpf']"
+                [value]="s.values['cpf'] || ''"
+                (input)="onInputChange('cpf', $event)"
+                placeholder="000.000.000-00"
+              />
+              <span class="error-msg" *ngIf="s.errors['cpf']">{{ s.errors['cpf'] }}</span>
+              <small class="field-hint">💡 dependentFields: person_type === 'PF'</small>
+            </div>
+
+            <!-- CNPJ (Visível se PJ) -->
+            <div class="form-group flex-1" *ngIf="s.visibility['cnpj'] !== false">
+              <label class="field-label" [class.required]="isFieldRequired('cnpj')">
+                CNPJ (Pessoa Jurídica) <span class="req-star" *ngIf="isFieldRequired('cnpj')">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                [class.has-error]="s.errors['cnpj']"
+                [value]="s.values['cnpj'] || ''"
+                (input)="onInputChange('cnpj', $event)"
+                placeholder="00.000.000/0001-00"
+              />
+              <span class="error-msg" *ngIf="s.errors['cnpj']">{{ s.errors['cnpj'] }}</span>
+              <small class="field-hint">💡 dependentFields: person_type === 'PJ'</small>
+            </div>
+
+            <!-- Razão Social (Visível se PJ) -->
+            <div class="form-group flex-1" *ngIf="s.visibility['corporate_name'] !== false">
+              <label class="field-label">Razão Social</label>
+              <input
+                type="text"
+                class="form-control"
+                [value]="s.values['corporate_name'] || ''"
+                (input)="onInputChange('corporate_name', $event)"
+                placeholder="Ex: Create Pixels LTDA"
+              />
+              <small class="field-hint">💡 clearedFields: ['person_type']</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Seção 2: Localização -->
+      <section class="card section-card">
+        <div class="card-header">
+          <div class="section-title-wrap">
+            <span class="section-num">2</span>
+            <div>
+              <h2 class="section-title">Localização Geográfica</h2>
+              <p class="section-desc">Recarga e reset de dados em cascata</p>
+            </div>
+          </div>
+          <div class="chip-group">
+            <span class="chip">reloadFields</span>
+            <span class="chip">clearedFields</span>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="form-row">
+            <!-- Estado -->
+            <div class="form-group flex-1">
+              <label class="field-label">Estado (UF)</label>
+              <select
+                class="form-control"
+                [value]="s.values['state_id'] || ''"
+                (change)="onSelectChange('state_id', $event)"
+              >
+                <option value="SP">São Paulo (SP)</option>
+                <option value="RJ">Rio de Janeiro (RJ)</option>
+                <option value="MG">Minas Gerais (MG)</option>
+              </select>
+            </div>
+
+            <!-- Cidade -->
+            <div class="form-group flex-1">
+              <label class="field-label">Cidade</label>
+              <select
+                class="form-control"
+                [value]="s.values['city_id'] || ''"
+                (change)="onSelectChange('city_id', $event)"
+              >
+                <option value="" disabled>Selecione uma cidade...</option>
+                <option *ngFor="let c of availableCities()" [value]="c.value">
+                  {{ c.label }}
+                </option>
+              </select>
+              <small class="field-hint">💡 reloadFields: [state_id] | clearedFields: [state_id]</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Seção 3: Condições Comerciais -->
+      <section class="card section-card">
+        <div class="card-header">
+          <div class="section-title-wrap">
+            <span class="section-num">3</span>
+            <div>
+              <h2 class="section-title">Condições Comerciais</h2>
+              <p class="section-desc">Bloqueio dinâmico com operadores booleanos AND e OR</p>
+            </div>
+          </div>
+          <div class="chip-group">
+            <span class="chip">disabledFields</span>
+            <span class="chip">disabledFieldsCondition: and/or</span>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="form-row">
+            <!-- Categoria do Fornecedor -->
+            <div class="form-group flex-1">
+              <label class="field-label">Categoria do Fornecedor</label>
+              <div class="segmented-control">
+                <button
+                  type="button"
+                  class="segment-btn"
+                  [class.active]="s.values['supplier_category'] === 'standard'"
+                  (click)="setSupplierCategory('standard')"
+                >
+                  Padrão
+                </button>
+                <button
+                  type="button"
+                  class="segment-btn"
+                  [class.active]="s.values['supplier_category'] === 'vip'"
+                  (click)="setSupplierCategory('vip')"
+                >
+                  VIP (Grandes Contas)
+                </button>
+                <button
+                  type="button"
+                  class="segment-btn"
+                  [class.active]="s.values['supplier_category'] === 'restricted'"
+                  (click)="setSupplierCategory('restricted')"
+                >
+                  Restrito (Bloqueado)
+                </button>
+              </div>
+            </div>
+
+            <!-- Prazo de Pagamento -->
+            <div class="form-group flex-1">
+              <label class="field-label">
+                Prazo de Pagamento
+                <span class="lock-indicator" *ngIf="s.disabledState['payment_terms']">🔒 Bloqueado</span>
+              </label>
+              <select
+                class="form-control"
+                [value]="s.values['payment_terms'] || ''"
+                [disabled]="s.disabledState['payment_terms'] === true"
+                (change)="onSelectChange('payment_terms', $event)"
+              >
+                <option value="cash">À Vista</option>
+                <option value="30_days">Boleto 30 Dias</option>
+                <option value="60_days">Boleto 60 Dias</option>
+              </select>
+              <small class="field-hint">💡 Bloqueia se supplier_category === 'restricted' AND person_type === 'PF'</small>
+            </div>
+
+            <!-- Desconto (%) -->
+            <div class="form-group flex-1">
+              <label class="field-label">
+                Desconto (%)
+                <span class="lock-indicator" *ngIf="s.disabledState['discount_percent']">🔒 Bloqueado</span>
+              </label>
+              <input
+                type="number"
+                class="form-control"
+                min="0"
+                max="100"
+                [value]="s.values['discount_percent'] ?? ''"
+                [disabled]="s.disabledState['discount_percent'] === true"
+                (input)="onInputChange('discount_percent', $event, true)"
+              />
+              <small class="field-hint">💡 Bloqueia se supplier_category === 'restricted' (OR)</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Seção 4: Catálogo & Aritmética -->
+      <section class="card section-card">
+        <div class="card-header">
+          <div class="section-title-wrap">
+            <span class="section-num">4</span>
+            <div>
+              <h2 class="section-title">Catálogo & Cálculo em Cascata</h2>
+              <p class="section-desc">autoSetFields com record e calcFields sem eval()</p>
+            </div>
+          </div>
+          <div class="chip-group">
+            <span class="chip">autoSetFields</span>
+            <span class="chip">calcFields</span>
+            <span class="chip">requiredRule: and</span>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <label class="field-label">Selecione um Produto do Catálogo (Dispara autoSetFields):</label>
+          <div class="catalog-cards">
+            <button
+              type="button"
+              class="catalog-item"
+              *ngFor="let prod of schema.catalogs?.products"
+              [class.selected]="s.values['product_id'] === prod.value"
+              (click)="selectProduct(prod.value)"
+            >
+              <div class="item-title">{{ prod.label }}</div>
+              <div class="item-sub">SKU: {{ prod.record?.sku }} • {{ formatCurrency(prod.record?.price) }}</div>
+            </button>
+          </div>
+
+          <div class="form-row mt-3">
+            <div class="form-group flex-1">
+              <label class="field-label">SKU Derivado (autoSetFields)</label>
+              <input type="text" class="form-control bg-readonly" [value]="s.values['product_sku'] || ''" disabled />
+            </div>
+
+            <div class="form-group flex-1">
+              <label class="field-label">Preço Unitário (R$)</label>
+              <input type="text" class="form-control bg-readonly" [value]="formatCurrency(s.values['unit_price'])" disabled />
+            </div>
+
+            <div class="form-group flex-1">
+              <label class="field-label">Quantidade</label>
+              <input
+                type="number"
+                class="form-control"
+                min="1"
+                [value]="s.values['quantity'] ?? 1"
+                (input)="onInputChange('quantity', $event, true)"
+              />
+            </div>
+          </div>
+
+          <!-- Banner de Total Calculado -->
+          <div class="calc-banner">
+            <div class="calc-info">
+              <span class="calc-label">Total Calculado em Tempo Real (AST Parser)</span>
+              <code class="calc-formula">
+                {{ s.values['quantity'] || 0 }} un × {{ formatCurrency(s.values['unit_price']) }} × (1 - {{ s.values['discount_percent'] || 0 }}%)
+              </code>
+            </div>
+            <div class="calc-value">
+              {{ formatCurrency(s.values['total_price']) }}
+            </div>
+          </div>
+
+          <div class="form-row mt-3">
+            <!-- Garantia Adicional -->
+            <div class="form-group flex-1">
+              <label class="field-label" [class.required]="isFieldRequired('warranty_months')">
+                Garantia Adicional (Meses)
+                <span class="req-star" *ngIf="isFieldRequired('warranty_months')">*</span>
+              </label>
+              <input
+                type="number"
+                class="form-control"
+                [class.has-error]="s.errors['warranty_months']"
+                [value]="s.values['warranty_months'] ?? ''"
+                (input)="onInputChange('warranty_months', $event, true)"
+                placeholder="Ex: 12"
+              />
+              <span class="error-msg" *ngIf="s.errors['warranty_months']">{{ s.errors['warranty_months'] }}</span>
+              <small class="field-hint">
+                ⚠️ Obrigatório via operador AND se Categoria = 'VIP' E Quantidade = 5!
+              </small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Barra de Ações -->
+      <div class="actions-bar">
+        <button type="button" class="btn btn-secondary" (click)="onReset()">
+          ↺ {{ schema.actions?.resetText || 'Restaurar' }}
+        </button>
+        <button type="submit" class="btn btn-primary">
+          ✓ {{ schema.actions?.submitText || 'Submeter Formulário' }}
+        </button>
+      </div>
+    </form>
+
+    <!-- Inspetor de Estado Reativo (JSON Debugger) -->
+    <section class="card inspector-card mt-4">
+      <div class="card-header">
+        <h3 class="inspector-title">🔍 Inspetor de Estado Angular Signals</h3>
+        <span class="inspector-badge">Tempo Real</span>
+      </div>
+      <div class="card-body inspector-body">
+        <div class="inspector-col">
+          <h4>Valores (values)</h4>
+          <pre>{{ s.values | json }}</pre>
+        </div>
+        <div class="inspector-col">
+          <h4>Erros (errors)</h4>
+          <pre>{{ s.errors | json }}</pre>
+        </div>
+        <div class="inspector-col">
+          <h4>Visibilidade & Bloqueios</h4>
+          <pre>{{ { visibility: s.visibility, disabled: s.disabledState } | json }}</pre>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

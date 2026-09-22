@@ -1,0 +1,32 @@
+{
+  "name": "@dynamic-form/react",
+  "version": "1.0.0",
+  "description": "High-performance headless React and React Native adapter for @dynamic-form/core",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  },
+  "dependencies": {
+    "@dynamic-form/core": "1.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "react": "^18.2.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": ["react", "react-native", "form", "dynamic-form", "headless", "hooks", "state-management"],
+  "author": "Create Pixels",
+  "license": "MIT"
+}
