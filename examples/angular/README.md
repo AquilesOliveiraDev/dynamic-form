@@ -1,22 +1,25 @@
 # TESTE_FINAL: Angular Dynamic Form
 
-Projeto funcional de referência em **Angular 22+ (Signals)** para o motor `@dynamic-form`, consumindo o mesmo contrato unificado [`TESTE_FINAL/form-schema.json`](../form-schema.json).
+Projeto funcional de referência em **Angular 22+ (Signals)** para o motor `@dynamic-form`, consumindo o mesmo contrato unificado [`examples/form-schema.json`](../form-schema.json).
 
 ---
 
 ## 🚀 Como Executar
 
 ### 1. Executar os Testes Unitários (100% Cobertura das 10 Regras)
+
 ```bash
 npm test -- --watch=false
 ```
 
 ### 2. Build de Produção
+
 ```bash
 npm run build
 ```
 
 ### 3. Iniciar Servidor de Desenvolvimento
+
 ```bash
 npm start
 # Acesse http://localhost:4200/
@@ -27,7 +30,7 @@ npm start
 ## 📋 As 10 Regras do `DynamicField` Implementadas
 
 | # | Regra | Implementação Angular | Descrição |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | 1 | `dependentFields` | Template condicional via `@if` / Signals | Exibe CPF para PF e CNPJ/Razão Social para PJ |
 | 2 | `disabledFields` | `[disabled]="s.disabledState[field]"` | Bloqueia campos com base no estado reativo do store |
 | 3 | `disabledFieldsCondition` | Operadores `'and'` / `'or'` | Combina múltiplos campos para desabilitação no `@dynamic-form/core` |
@@ -44,7 +47,7 @@ npm start
 ## 📂 Estrutura de Arquivos
 
 ```
-TESTE_FINAL/angular/
+examples/angular/
 ├── public/
 │   └── form-schema.json -> ../../form-schema.json (Symlink do contrato universal)
 ├── src/

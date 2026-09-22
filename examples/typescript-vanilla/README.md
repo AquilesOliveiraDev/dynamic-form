@@ -1,8 +1,9 @@
 # Teste Final: TypeScript Vanilla + @dynamic-form/core
 
-Exemplo funcional e de alta performance de formulário dinâmico em **TypeScript Vanilla** consumindo o JSON Schema universal (`TESTE_FINAL/form-schema.json`), cobrindo com fidelidade todas as **10 regras do `DynamicField`**.
+Exemplo funcional e de alta performance de formulário dinâmico em **TypeScript Vanilla** consumindo o JSON Schema universal (`examples/form-schema.json`), cobrindo com fidelidade todas as **10 regras do `DynamicField`**.
 
 O projeto suporta **dois modos de execução**:
+
 1. **Modo Web / DOM Interativo**: Aplicação web com Dark Theme moderno renderizada com manipulação de DOM nativa e reatividade fina via `store.subscribe`.
 2. **Modo Headless / CLI Node.js**: Script executável em linha de comando (`cli.ts`) demonstrando a execução do motor sem nenhuma dependência de navegador.
 
@@ -19,7 +20,7 @@ O projeto suporta **dois modos de execução**:
 ## 📋 As 10 Regras do `DynamicField` Cobertas
 
 | # | Regra | Implementação no Exemplo |
-|---|---|---|
+| --- | --- | --- |
 | 1 | `dependentFields` | Alternância condicional de visibilidade entre **CPF** (PF) e **CNPJ + Razão Social** (PJ). |
 | 2 | `disabledFields` | Desabilitação de **Condições de Pagamento** e **% Desconto** com base no tipo de pessoa e fornecedor. |
 | 3 | `disabledFieldsCondition` | Operadores lógicos: `and` para Condições de Pagamento (exige `restricted` **AND** `PF`) e `or` para % Desconto. |
@@ -36,26 +37,31 @@ O projeto suporta **dois modos de execução**:
 ## 🛠️ Comandos
 
 ### Instalar dependências
+
 ```bash
 npm install
 ```
 
 ### Executar em Modo CLI (Headless Node.js)
+
 ```bash
 npm run cli
 ```
 
 ### Rodar servidor de desenvolvimento Web
+
 ```bash
 npm run dev
 ```
 
 ### Executar testes unitários (Vitest)
+
 ```bash
 npm test
 ```
 
 ### Build de produção
+
 ```bash
 npm run build
 ```

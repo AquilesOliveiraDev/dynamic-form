@@ -1,22 +1,25 @@
 # TESTE_FINAL: Svelte 5 Dynamic Form
 
-Projeto funcional de referência em **Svelte 5 (Runes: `$state`, `$derived`)** para o motor `@dynamic-form`, consumindo o mesmo contrato unificado [`TESTE_FINAL/form-schema.json`](../form-schema.json).
+Projeto funcional de referência em **Svelte 5 (Runes: `$state`, `$derived`)** para o motor `@dynamic-form`, consumindo o mesmo contrato unificado [`examples/form-schema.json`](../form-schema.json).
 
 ---
 
 ## 🚀 Como Executar
 
 ### 1. Executar os Testes Unitários (100% Cobertura das 10 Regras)
+
 ```bash
 npm test
 ```
 
 ### 2. Build de Produção
+
 ```bash
 npm run build
 ```
 
 ### 3. Iniciar Servidor de Desenvolvimento
+
 ```bash
 npm run dev
 # Acesse o endereço exibido no terminal (ex: http://localhost:5175/)
@@ -27,7 +30,7 @@ npm run dev
 ## 📋 As 10 Regras do `DynamicField` Implementadas
 
 | # | Regra | Implementação Svelte 5 | Descrição |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | 1 | `dependentFields` | `{#if form.state.visibility[field] !== false}` | Exibe CPF para PF e CNPJ/Razão Social para PJ |
 | 2 | `disabledFields` | `disabled={form.state.disabledState[field] === true}` | Bloqueia campos com base no estado reativo do store |
 | 3 | `disabledFieldsCondition` | Operadores `'and'` / `'or'` | Combina múltiplos campos para desabilitação no `@dynamic-form/core` |
@@ -44,7 +47,7 @@ npm run dev
 ## 📂 Estrutura de Arquivos
 
 ```
-TESTE_FINAL/svelte/
+examples/svelte/
 ├── public/
 │   └── form-schema.json -> ../../form-schema.json (Symlink do contrato universal)
 ├── src/

@@ -1,6 +1,6 @@
 # Teste Final: React 19 + @dynamic-form/core
 
-Exemplo funcional e reativo de formulário dinâmico em **React 19** consumindo o JSON Schema universal (`TESTE_FINAL/form-schema.json`), cobrindo com fidelidade todas as **10 regras do `DynamicField`**.
+Exemplo funcional e reativo de formulário dinâmico em **React 19** consumindo o JSON Schema universal (`examples/form-schema.json`), cobrindo com fidelidade todas as **10 regras do `DynamicField`**.
 
 ---
 
@@ -18,7 +18,7 @@ O projeto utiliza **React 19 + TypeScript + Vite**, integrando o `@dynamic-form/
 ## 📋 As 10 Regras do `DynamicField` Cobertas
 
 | # | Regra | Implementação no Exemplo |
-|---|---|---|
+| --- | --- | --- |
 | 1 | `dependentFields` | Alternância condicional de visibilidade entre **CPF** (PF) e **CNPJ + Razão Social** (PJ). |
 | 2 | `disabledFields` | Desabilitação de **Condições de Pagamento** e **% Desconto** com base no tipo de pessoa e fornecedor. |
 | 3 | `disabledFieldsCondition` | Operadores lógicos: `and` para Condições de Pagamento (exige `restricted` **AND** `PF`) e `or` para % Desconto. |
@@ -35,21 +35,25 @@ O projeto utiliza **React 19 + TypeScript + Vite**, integrando o `@dynamic-form/
 ## 🛠️ Comandos
 
 ### Instalar dependências
+
 ```bash
 npm install
 ```
 
 ### Rodar servidor de desenvolvimento
+
 ```bash
 npm run dev
 ```
 
 ### Executar testes unitários (Vitest)
+
 ```bash
 npm test
 ```
 
 ### Build de produção
+
 ```bash
 npm run build
 ```
