@@ -1,4 +1,4 @@
-# TESTE_FINAL: Vue 3 Dynamic Form
+# Project: Vue 3 Dynamic Form
 
 Projeto funcional de referência em **Vue 3 (Composition API & `<script setup>`)** para o motor `@dynamic-form`, consumindo o mesmo contrato unificado [`examples/form-schema.json`](../form-schema.json).
 

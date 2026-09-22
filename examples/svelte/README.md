@@ -1,4 +1,4 @@
-# TESTE_FINAL: Svelte 5 Dynamic Form
+# Project: Svelte 5 Dynamic Form
 
 Projeto funcional de referência em **Svelte 5 (Runes: `$state`, `$derived`)** para o motor `@dynamic-form`, consumindo o mesmo contrato unificado [`examples/form-schema.json`](../form-schema.json).
 

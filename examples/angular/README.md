@@ -1,4 +1,4 @@
-# TESTE_FINAL: Angular Dynamic Form
+# Project: Angular Dynamic Form
 
 Projeto funcional de referência em **Angular 22+ (Signals)** para o motor `@dynamic-form`, consumindo o mesmo contrato unificado [`examples/form-schema.json`](../form-schema.json).
 

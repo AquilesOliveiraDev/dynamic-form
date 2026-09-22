@@ -1,4 +1,4 @@
-# 📱 TESTE_FINAL: React Native App com 10 Regras do DynamicField
+# 📱 Project: React Native App com 10 Regras do DynamicField
 
 Aplicação **React Native / Expo** independente organizada dentro de `examples/react-native`, configurada para validar o motor universal **`@dynamic-form/core`** cobrindo com precisão as **10 regras do DynamicField**:
 
